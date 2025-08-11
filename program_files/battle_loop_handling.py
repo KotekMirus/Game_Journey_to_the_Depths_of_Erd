@@ -3,6 +3,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
 import questionary
+import random
+from collections.abc import Callable
 
 
 def show_status(
@@ -58,22 +60,30 @@ def battle(
                 player_character.attack(enemies[target_index])
             elif choice == "Use ability":
                 abilities_choices: list[questionary.Choice] = [
-                    questionary.Choice(title=e.name, value=i)
-                    for i, e in enumerate(player_character.abilities)
+                    questionary.Choice(title=a[0], value=a[1])
+                    for a in player_character.abilities
                 ]
-                ability_index: int = questionary.select(
+                ability: Callable = questionary.select(
                     "Choose your ability:",
                     choices=abilities_choices,
                 ).ask()
                 target_index: int = questionary.select(
                     "Choose your target:", choices=target_choices
                 ).ask()
-                # użycie umiejętności
+                ability(enemies[target_index])
             elif choice == "End turn":
                 pass
+            enemies: list[Character] = [
+                enemy for enemy in enemies if enemy.current_hp > 0
+            ]
+            if not enemies:
+                return True
         for enemy in enemies:
             console.rule(f"[bold green]{enemy.name}'s turn[/bold green]")
-            # tu atakują przeciwnicy
-
-
-# warunek zakończenia battle (deaths)
+            random_target_index = random.randint(0, len(player_characters) - 1)
+            enemy.attack(random_target_index)
+            player_characters_are_dead: bool = all(
+                character.current_hp <= 0 for character in player_characters
+            )
+            if player_characters_are_dead:
+                return False

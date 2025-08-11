@@ -35,7 +35,11 @@ class Player_Character_Arson(Character):
 class Player_Character_Histri(Character):
     def __init__(self):
         super().__init__("Histri", 1, 45)
-        self.abilities = ["Shockwave", "Life Drain", "Mighty Storm"]
+        self.abilities = [
+            ("Shockwave", self.ability_1),
+            ("Life Drain", self.ability_2),
+            ("Mighty Storm", self.ability_3),
+        ]
 
     def attack(self, target: Character):
         super().attack(target)
