@@ -35,12 +35,13 @@ def show_status(
         border_style="yellow",
     )
     console.print(player_group)
-    console.print(enemies_group)
+    if enemies:
+        console.print(enemies_group)
 
 
 def battle(
     console: Console, player_characters: list[Character], enemies: list[Character]
-):
+) -> bool:
     console.rule(f"[bold green]Battle[/bold green]")
     battle_ended: bool = False
     while not battle_ended:

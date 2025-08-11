@@ -17,7 +17,11 @@ class Character:
 class Player_Character_Arson(Character):
     def __init__(self):
         super().__init__("Arson", 2, 40)
-        self.abilities = ["Power Attack 1", "Power Attack 2", "Power Attack 3"]
+        self.abilities = [
+            ("Power Attack 1 <1CP>", self.ability_1),
+            ("Power Attack 2 <2CP>", self.ability_2),
+            ("Power Attack 3 <3CP>", self.ability_3),
+        ]
 
     def attack(self, target: Character):
         super().attack(target)
@@ -36,9 +40,9 @@ class Player_Character_Histri(Character):
     def __init__(self):
         super().__init__("Histri", 1, 45)
         self.abilities = [
-            ("Shockwave", self.ability_1),
-            ("Life Drain", self.ability_2),
-            ("Mighty Storm", self.ability_3),
+            ("Shockwave <1CP>", self.ability_1),
+            ("Life Drain <2CP>", self.ability_2),
+            ("Mighty Storm <3CP>", self.ability_3),
         ]
 
     def attack(self, target: Character):
