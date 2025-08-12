@@ -36,12 +36,15 @@ def main_game_loop():
         "Power crystal (+2CP)": 0,
         "Great power crystal (+4CP)": 0,
     }
+    crystal_counter: int = 0
     current_layer_index: int = 0
     all_layers_contents: list[list[str, list[characters.Character]]] = (
         exploration.generate_all_layers_contents()
     )
     console.print("Początek")
     while not game_ended:
+        if current_layer_index == 5:
+            console.print("Final battle!")
         choice: str = questionary.select(
             "Choose your action:",
             choices=[
@@ -140,6 +143,25 @@ def main_game_loop():
                     ).ask()
                     if choice == "Yes":
                         current_layer_index += 1
+                elif all_layers_contents[current_layer_index][place_index] == "EE":
+                    console.print("You see fancy gateway with five holes.")
+                    if crystal_counter == 5:
+                        choice: str = questionary.select(
+                            "Do you want to put collected crystals into holes?:",
+                            choices=[
+                                "Yes",
+                                "No",
+                            ],
+                        ).ask()
+                        if choice == "Yes":
+                            console.print("Write word you want to create from runes.")
+                            word: str = input("Word: ")
+                            word = word.replace(" ", "")
+                            if word.lower() == "sfjpx":
+                                console.print("Gateway opens!")
+                                current_layer_index += 1
+                            else:
+                                console.print("Nothing happens.")
                 elif all_layers_contents[current_layer_index][place_index] == "F":
                     console.print("You found strange fountain.")
                     choice: str = questionary.select(
@@ -168,6 +190,7 @@ def main_game_loop():
                         + all_layers_contents[current_layer_index][place_index][1]
                         + "'."
                     )
+                    crystal_counter += 1
                     all_layers_contents[current_layer_index][place_index] = " "
                     console.print(
                         "You found strange crystal with rune. Is rune important? Probably not."

@@ -45,7 +45,7 @@ layers_data: list[dict[str:any]] = [
             characters.Enemy_Character_Frus,
             characters.Enemy_Character_Dark_Goo,
         ],
-        "places_contents": ["S", "E", "N4", "T"],
+        "places_contents": ["S", "EE", "N4", "T"],
     },
     {
         "battles_number": 1,
