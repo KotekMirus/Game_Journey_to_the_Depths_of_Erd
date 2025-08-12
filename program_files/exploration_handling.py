@@ -1,7 +1,7 @@
 import characters_handling as characters
 import random
 
-layers_data = [
+layers_data: list[dict[str:any]] = [
     {
         "battles_number": 3,
         "enemies_number_per_battle": [1, 1, 2, 2, 2, 3],
@@ -9,7 +9,7 @@ layers_data = [
             characters.Enemy_Character_Frus,
             characters.Enemy_Character_Dark_Goo,
         ],
-        "places_contents": ["S", "E", "N1", "N2", "T", "T", "T"],
+        "places_contents": ["E", "N1", "N2", "CS", "T", "T", "T"],
     },
     {
         "battles_number": 4,
@@ -18,7 +18,7 @@ layers_data = [
             characters.Enemy_Character_Frus,
             characters.Enemy_Character_Dark_Goo,
         ],
-        "places_contents": ["S", "E", "C1", "T", "T", "T"],
+        "places_contents": ["S", "E", "CF", "T", "T", "T"],
     },
     {
         "battles_number": 4,
@@ -27,7 +27,7 @@ layers_data = [
             characters.Enemy_Character_Frus,
             characters.Enemy_Character_Dark_Goo,
         ],
-        "places_contents": ["S", "E", "C2", "N3", "F", "T"],
+        "places_contents": ["S", "E", "CJ", "N3", "F", "T"],
     },
     {
         "battles_number": 5,
@@ -36,7 +36,7 @@ layers_data = [
             characters.Enemy_Character_Frus,
             characters.Enemy_Character_Dark_Goo,
         ],
-        "places_contents": ["S", "E", "C3", "T", "T"],
+        "places_contents": ["S", "E", "CP", "CX", "T"],
     },
     {
         "battles_number": 6,
@@ -72,7 +72,38 @@ def generate_layer_content(layer_index: int) -> list[str, list[characters.Charac
             )
             battle.append(enemy_type())
         layer_content.append(battle)
-    layer_content = layer_content + layers_data[layer_index]["places_contents"]
+    places_contents: list[str, list[str]] = []
+    for content in layers_data[layer_index]["places_contents"]:
+        if content == "T":
+            treasures: list[str] = []
+            items_number_chances: list[int] = [1, 1, 1, 1, 1, 2, 2, 2, 3]
+            items_number: int = random.choice(items_number_chances)
+            items_type_chances: list[str] = [
+                "H1",
+                "H1",
+                "H1",
+                "H1",
+                "H2",
+                "H2",
+                "C1",
+                "C1",
+                "C1",
+                "C2",
+            ]
+            for _ in range(items_number):
+                item_type: str = random.choice(items_type_chances)
+                if item_type == "H1":
+                    treasures.append("Healing potion (+10HP)")
+                elif item_type == "H2":
+                    treasures.append("Great healing potion (+20HP)")
+                elif item_type == "C1":
+                    treasures.append("Power crystal (+2CP)")
+                elif item_type == "C2":
+                    treasures.append("Great power crystal (+4CP)")
+            places_contents.append(treasures)
+        else:
+            places_contents.append(content)
+    layer_content = layer_content + places_contents
     random.shuffle(layer_content)
     return layer_content
 

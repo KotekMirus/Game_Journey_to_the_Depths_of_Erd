@@ -1,2 +1,4 @@
+import game_loop_handling
+
 if __name__ == "__main__":
-    pass
+    game_loop_handling.main_game_loop()

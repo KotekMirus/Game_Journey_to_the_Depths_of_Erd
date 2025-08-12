@@ -4,8 +4,9 @@ from rich.columns import Columns
 import questionary
 import battle_loop_handling as battle
 import characters_handling as characters
+import exploration_handling as exploration
+import json
 
-layers_descriptions: dict[int:str] = {}
 game_ended: bool = False
 console: Console = Console()
 
@@ -16,8 +17,16 @@ def initialize_party() -> list[characters.Character]:
     return [character_1, character_2]
 
 
+def initialize_descriptions() -> tuple[dict[str:str], dict[str:str]]:
+    descriptions: dict[str : dict[str:str]] = None
+    with open("descriptions.json", "r") as file:
+        descriptions = json.load(file)
+    return descriptions["layers"], descriptions["notes"]
+
+
 def main_game_loop():
     player_characters: list[characters.Character] = initialize_party()
+    layers_descriptions, notes = initialize_descriptions()
     inventory: dict[str:str] = {}
     inventory_usable: dict[str:int] = {
         "Healing potion (+10HP)": 0,
@@ -26,6 +35,9 @@ def main_game_loop():
         "Great power crystal (+4CP)": 0,
     }
     current_layer_index: int = 0
+    all_layers_contents: list[list[str, list[characters.Character]]] = (
+        exploration.generate_all_layers_contents()
+    )
     console.print("Początek")
     while not game_ended:
         choice: str = questionary.select(
@@ -43,9 +55,10 @@ def main_game_loop():
             for character in player_characters:
                 console.print(character.description)
         elif choice == "Check layer description":
-            console.print(layers_descriptions[current_layer_index])
+            console.print(layers_descriptions[str(current_layer_index)])
         elif choice == "Check inventory":
-            console.print(inventory_usable + inventory)
+            inventory_combined = inventory_usable | inventory
+            console.print(inventory_combined)
         elif choice == "Use item":
             item_choices: list[questionary.Choice] = [
                 questionary.Choice(
@@ -87,6 +100,80 @@ def main_game_loop():
                 else:
                     console.print("This item can't be used.")
             else:
-                console.print("You don't have enough X of this item.")
+                console.print("You don't have enough copies of this item.")
         elif choice == "Explore layer":
-            pass
+            place_choices: list[questionary.Choice] = [
+                questionary.Choice(title="Miejsce " + str(i + 1), value=i)
+                for i in range(len(all_layers_contents[current_layer_index]))
+            ]
+            place_index: int = questionary.select(
+                "Choose place to explore:", choices=place_choices
+            ).ask()
+            if isinstance(all_layers_contents[current_layer_index][place_index], str):
+                if all_layers_contents[current_layer_index][place_index] == "S":
+                    console.print("This is gateway to upper layer.")
+                    choice: str = questionary.select(
+                        "Do you want to go to upper layer?:",
+                        choices=[
+                            "Yes",
+                            "No",
+                        ],
+                    ).ask()
+                    if choice == "Yes":
+                        current_layer_index -= 1
+                elif all_layers_contents[current_layer_index][place_index] == "E":
+                    console.print("This is gateway to lower layer.")
+                    choice: str = questionary.select(
+                        "Do you want to go to lower layer?:",
+                        choices=[
+                            "Yes",
+                            "No",
+                        ],
+                    ).ask()
+                    if choice == "Yes":
+                        current_layer_index += 1
+                elif all_layers_contents[current_layer_index][place_index] == "F":
+                    console.print("You found strange fountain.")
+                    choice: str = questionary.select(
+                        "Do you want to drink water from fountain?:",
+                        choices=[
+                            "Yes",
+                            "No",
+                        ],
+                    ).ask()
+                    if choice == "Yes":
+                        all_layers_contents[current_layer_index][place_index] = " "
+                        for character in player_characters:
+                            character.current_hp = character.max_hp
+                            character.current_crystal_power = (
+                                character.max_crystal_power
+                            )
+                        console.print(
+                            "Members of your party were fully regenerated (HP and CP). Strange fountain felt apart."
+                        )
+                elif all_layers_contents[current_layer_index][place_index][0] == "C":
+                    inventory[
+                        "Crystal "
+                        + all_layers_contents[current_layer_index][place_index][1]
+                    ] = (
+                        "Strange crystal with rune '"
+                        + all_layers_contents[current_layer_index][place_index][1]
+                        + "'."
+                    )
+                    all_layers_contents[current_layer_index][place_index] = " "
+                    console.print(
+                        "You found strange crystal with rune. Is rune important? Probably not."
+                    )
+                elif all_layers_contents[current_layer_index][place_index][0] == "N":
+                    pass
+                elif all_layers_contents[current_layer_index][place_index] == " ":
+                    console.print("Nothing interesting here.")
+            elif isinstance(
+                all_layers_contents[current_layer_index][place_index], list
+            ):
+                if isinstance(
+                    all_layers_contents[current_layer_index][place_index][0], str
+                ):
+                    pass
+                else:
+                    pass
