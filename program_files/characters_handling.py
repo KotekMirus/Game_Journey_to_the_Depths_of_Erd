@@ -1,4 +1,5 @@
 import random
+from collections.abc import Callable
 
 
 class Character:
@@ -17,7 +18,8 @@ class Character:
 class Player_Character_Arson(Character):
     def __init__(self):
         super().__init__("Arson", 2, 40)
-        self.abilities = [
+        self.description: str = "x"
+        self.abilities: list[tuple[str, Callable]] = [
             ("Power Attack 1 <1CP>", self.ability_1),
             ("Power Attack 2 <2CP>", self.ability_2),
             ("Power Attack 3 <3CP>", self.ability_3),
@@ -39,7 +41,8 @@ class Player_Character_Arson(Character):
 class Player_Character_Histri(Character):
     def __init__(self):
         super().__init__("Histri", 1, 45)
-        self.abilities = [
+        self.description: str = "x"
+        self.abilities: list[tuple[str, Callable]] = [
             ("Shockwave <1CP>", self.ability_1),
             ("Life Drain <2CP>", self.ability_2),
             ("Mighty Storm <3CP>", self.ability_3),
@@ -67,7 +70,7 @@ class Enemy_Character_Frus(Character):
         super().attack(target)
 
 
-class Enemy_Character_Frus(Character):
+class Enemy_Character_Dark_Goo(Character):
     def __init__(self):
         super().__init__("Dark Goo", 1, 15)
         self.description: str = "description"

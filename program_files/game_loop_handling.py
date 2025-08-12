@@ -5,9 +5,9 @@ import questionary
 import battle_loop_handling as battle
 import characters_handling as characters
 
+layers_descriptions: dict[int:str] = {}
 game_ended: bool = False
 console: Console = Console()
-game_start: bool = True
 
 
 def initialize_party() -> list[characters.Character]:
@@ -25,10 +25,9 @@ def main_game_loop():
         "Power crystal (+2CP)": 0,
         "Great power crystal (+4CP)": 0,
     }
+    current_layer_index: int = 0
+    console.print("Początek")
     while not game_ended:
-        if game_start:
-            console.print("Początek")
-            game_start = False
         choice: str = questionary.select(
             "Choose your action:",
             choices=[
@@ -41,9 +40,10 @@ def main_game_loop():
         ).ask()
         if choice == "Check party":
             battle.show_status(console, player_characters, None)
-            # tutaj wyświetlenie opisów ability i opisów postaci
+            for character in player_characters:
+                console.print(character.description)
         elif choice == "Check layer description":
-            pass
+            console.print(layers_descriptions[current_layer_index])
         elif choice == "Check inventory":
             console.print(inventory_usable + inventory)
         elif choice == "Use item":
