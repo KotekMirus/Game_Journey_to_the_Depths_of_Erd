@@ -12,30 +12,31 @@ def show_status(
 ):
     player_characters_panels: list[Panel] = [
         Panel(
-            f"HP: {character.current_hp}/{character.max_hp}\nCP: {character.current_crystal_power}/{character.max_crystal_power}",
+            f"STR: {character.strength}\nHP: {character.current_hp}/{character.max_hp}\nCP: {character.current_crystal_power}/{character.max_crystal_power}",
             title=character.name,
+            border_style="#b3feff",
         )
         for character in player_characters
-    ]
-    enemies_panels: list[Panel] = [
-        Panel(
-            f"HP: {enemy.current_hp}/{enemy.max_hp}",
-            title=enemy.name,
-        )
-        for enemy in enemies
     ]
     player_group: Panel = Panel(
         Columns(player_characters_panels, expand=True, equal=True),
         title="Party",
         border_style="yellow",
     )
-    enemies_group: Panel = Panel(
-        Columns(enemies_panels, expand=True, equal=True),
-        title="Enemies",
-        border_style="yellow",
-    )
     console.print(player_group)
     if enemies:
+        enemies_panels: list[Panel] = [
+            Panel(
+                f"HP: {enemy.current_hp}/{enemy.max_hp}",
+                title=enemy.name,
+            )
+            for enemy in enemies
+        ]
+        enemies_group: Panel = Panel(
+            Columns(enemies_panels, expand=True, equal=True),
+            title="Enemies",
+            border_style="yellow",
+        )
         console.print(enemies_group)
 
 

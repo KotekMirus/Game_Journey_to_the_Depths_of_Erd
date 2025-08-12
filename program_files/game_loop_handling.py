@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
+from rich.table import Table
 import questionary
 import battle_loop_handling as battle
 import characters_handling as characters
@@ -14,7 +15,8 @@ console: Console = Console()
 def initialize_party() -> list[characters.Character]:
     character_1: characters.Character = characters.Player_Character_Arson()
     character_2: characters.Character = characters.Player_Character_Histri()
-    return [character_1, character_2]
+    character_3: characters.Character = characters.Player_Character_Golrik()
+    return [character_1, character_2, character_3]
 
 
 def initialize_descriptions() -> tuple[dict[str:str], dict[str:str]]:
@@ -53,12 +55,19 @@ def main_game_loop():
         if choice == "Check party":
             battle.show_status(console, player_characters, None)
             for character in player_characters:
+                console.print("\n")
                 console.print(character.description)
+            console.print("\n")
         elif choice == "Check layer description":
             console.print(layers_descriptions[str(current_layer_index)])
         elif choice == "Check inventory":
             inventory_combined = inventory_usable | inventory
-            console.print(inventory_combined)
+            table = Table(title="Inventory", show_lines=True)
+            table.add_column("Item")
+            table.add_column("Quantity/Description")
+            for item, description in inventory_combined.items():
+                table.add_row(item, str(description))
+            console.print(table)
         elif choice == "Use item":
             item_choices: list[questionary.Choice] = [
                 questionary.Choice(
@@ -97,8 +106,7 @@ def main_game_loop():
                         player_characters[character_index].max_crystal_power,
                         player_characters[character_index].current_crystal_power + 4,
                     )
-                else:
-                    console.print("This item can't be used.")
+                inventory_usable[item_key] -= 1
             else:
                 console.print("You don't have enough copies of this item.")
         elif choice == "Explore layer":
@@ -165,7 +173,10 @@ def main_game_loop():
                         "You found strange crystal with rune. Is rune important? Probably not."
                     )
                 elif all_layers_contents[current_layer_index][place_index][0] == "N":
-                    pass
+                    console.print(
+                        notes[all_layers_contents[current_layer_index][place_index]],
+                        style="black on yellow",
+                    )
                 elif all_layers_contents[current_layer_index][place_index] == " ":
                     console.print("Nothing interesting here.")
             elif isinstance(
@@ -174,6 +185,13 @@ def main_game_loop():
                 if isinstance(
                     all_layers_contents[current_layer_index][place_index][0], str
                 ):
-                    pass
+                    for item in all_layers_contents[current_layer_index][place_index]:
+                        inventory_usable[item] += 1
+                    console.print("You found usefull items.")
+                    console.print(
+                        *all_layers_contents[current_layer_index][place_index],
+                        style="#60fc65"
+                    )
+                    all_layers_contents[current_layer_index][place_index] = " "
                 else:
-                    pass
+                    console.print("Battle!")
