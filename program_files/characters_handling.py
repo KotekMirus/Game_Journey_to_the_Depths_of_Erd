@@ -5,7 +5,7 @@ import json
 
 def get_character_description(character_name: str) -> str:
     descriptions: dict[str : dict[str:str]] = None
-    with open("descriptions.json", "r") as file:
+    with open("descriptions.json", "r", encoding="utf-8") as file:
         descriptions = json.load(file)
     return descriptions["characters"][character_name]
 
@@ -74,9 +74,9 @@ class Player_Character_Golrik(Character):
         super().__init__("Golrik", 1, 40)
         self.description: str = get_character_description("Golrik")
         self.abilities: list[tuple[str, Callable]] = [
-            ("Dual strike <1CP>", self.ability_1),
-            ("Healing circle <2CP>", self.ability_2),
-            ("Random bullshit! <3CP>", self.ability_3),
+            ("Unstable Strike <1CP>", self.ability_1),
+            ("Healing Circle <2CP>", self.ability_2),
+            ("Random Bullshit! <3CP>", self.ability_3),
         ]
 
     def attack(self, target: Character):

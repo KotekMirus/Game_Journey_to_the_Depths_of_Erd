@@ -1,6 +1,5 @@
 from rich.console import Console
 from rich.panel import Panel
-from rich.columns import Columns
 from rich.table import Table
 import questionary
 import battle_loop_handling as battle
@@ -8,7 +7,6 @@ import characters_handling as characters
 import exploration_handling as exploration
 import json
 
-game_ended: bool = False
 console: Console = Console()
 
 
@@ -19,16 +17,16 @@ def initialize_party() -> list[characters.Character]:
     return [character_1, character_2, character_3]
 
 
-def initialize_descriptions() -> tuple[dict[str:str], dict[str:str]]:
+def initialize_descriptions() -> tuple[str, dict[str:str], dict[str:str]]:
     descriptions: dict[str : dict[str:str]] = None
-    with open("descriptions.json", "r") as file:
+    with open("descriptions.json", "r", encoding="utf-8") as file:
         descriptions = json.load(file)
-    return descriptions["layers"], descriptions["notes"]
+    return descriptions["introduction"], descriptions["layers"], descriptions["notes"]
 
 
 def main_game_loop():
     player_characters: list[characters.Character] = initialize_party()
-    layers_descriptions, notes = initialize_descriptions()
+    introduction, layers_descriptions, notes = initialize_descriptions()
     inventory: dict[str:str] = {}
     inventory_usable: dict[str:int] = {
         "Healing potion (+10HP)": 0,
@@ -41,10 +39,20 @@ def main_game_loop():
     all_layers_contents: list[list[str, list[characters.Character]]] = (
         exploration.generate_all_layers_contents()
     )
-    console.print("Początek")
-    while not game_ended:
+    console.print(
+        Panel(introduction, title="Introduction", border_style="#a4f5ea"),
+        highlight=False,
+    )
+    while True:
         if current_layer_index == 5:
             console.print("Final battle!")
+            console.print(
+                "[bold]THANK YOU FOR PLAYING <3[/bold]",
+                style="#f551f2",
+                highlight=False,
+            )
+            input("Press 'Enter' to end game.")
+            break
         choice: str = questionary.select(
             "Choose your action:",
             choices=[
@@ -78,16 +86,22 @@ def main_game_loop():
                 )
                 for item in inventory_usable
             ]
+            item_choices.append(questionary.Choice(title="Back", value="Back"))
             item_key: str = questionary.select(
                 "Choose item to use:", choices=item_choices
             ).ask()
+            if item_key == "Back":
+                continue
             character_choices: list[questionary.Choice] = [
                 questionary.Choice(title=c.name, value=i)
                 for i, c in enumerate(player_characters)
             ]
+            character_choices.append(questionary.Choice(title="Back", value="Back"))
             character_index: int = questionary.select(
                 "Choose character:", choices=character_choices
             ).ask()
+            if character_index == "Back":
+                continue
             if inventory_usable[item_key] > 0:
                 if item_key == "Healing potion (+10HP)":
                     player_characters[character_index].current_hp = min(
@@ -114,7 +128,7 @@ def main_game_loop():
                 console.print("You don't have enough copies of this item.")
         elif choice == "Explore layer":
             place_choices: list[questionary.Choice] = [
-                questionary.Choice(title="Miejsce " + str(i + 1), value=i)
+                questionary.Choice(title="Place " + str(i + 1), value=i)
                 for i in range(len(all_layers_contents[current_layer_index]))
             ]
             place_index: int = questionary.select(
@@ -122,9 +136,9 @@ def main_game_loop():
             ).ask()
             if isinstance(all_layers_contents[current_layer_index][place_index], str):
                 if all_layers_contents[current_layer_index][place_index] == "S":
-                    console.print("This is gateway to upper layer.")
+                    console.print("This is the gateway to the upper layer.")
                     choice: str = questionary.select(
-                        "Do you want to go to upper layer?:",
+                        "Do you want to go to upper layer?",
                         choices=[
                             "Yes",
                             "No",
@@ -133,9 +147,9 @@ def main_game_loop():
                     if choice == "Yes":
                         current_layer_index -= 1
                 elif all_layers_contents[current_layer_index][place_index] == "E":
-                    console.print("This is gateway to lower layer.")
+                    console.print("This is the gateway to the lower layer.")
                     choice: str = questionary.select(
-                        "Do you want to go to lower layer?:",
+                        "Do you want to go to lower layer?",
                         choices=[
                             "Yes",
                             "No",
@@ -144,28 +158,37 @@ def main_game_loop():
                     if choice == "Yes":
                         current_layer_index += 1
                 elif all_layers_contents[current_layer_index][place_index] == "EE":
-                    console.print("You see fancy gateway with five holes.")
+                    console.print(
+                        'Before you stands a massive slab of cream-colored material. Countless swirling patterns are carved into the pale stone. At about the height of your head, five precisely cut holes are set into the slab, each surrounded by a gilded frame shaped like the fangs of an open maw. Above them, an inscription in the Dekti language reads: "Heart of the Rykku."',
+                        highlight=False,
+                    )
                     if crystal_counter == 5:
                         choice: str = questionary.select(
-                            "Do you want to put collected crystals into holes?:",
+                            "Do you want to put the collected crystals into the holes?",
                             choices=[
                                 "Yes",
                                 "No",
                             ],
                         ).ask()
                         if choice == "Yes":
-                            console.print("Write word you want to create from runes.")
+                            console.print(
+                                "Write the word you want to create from the runes."
+                            )
                             word: str = input("Word: ")
                             word = word.replace(" ", "")
                             if word.lower() == "sfjpx":
-                                console.print("Gateway opens!")
+                                console.print(
+                                    "When you placed the strange crystals into the openings in the slab, the gate slowly slid into the ground with a distinctive grinding sound, leaving a wide and even taller passage leading into a dark chamber."
+                                )
                                 current_layer_index += 1
                             else:
                                 console.print("Nothing happens.")
                 elif all_layers_contents[current_layer_index][place_index] == "F":
-                    console.print("You found strange fountain.")
+                    console.print(
+                        "Amid the tunnels rich with precious deposits, you find a small fountain crafted from silver metal. Water slowly trickles from its tip, flowing along its ornate carvings into the basin below. The liquid shimmers with all the colors of the rainbow."
+                    )
                     choice: str = questionary.select(
-                        "Do you want to drink water from fountain?:",
+                        "Do you want your party to drink from the fountain?",
                         choices=[
                             "Yes",
                             "No",
@@ -179,7 +202,7 @@ def main_game_loop():
                                 character.max_crystal_power
                             )
                         console.print(
-                            "Members of your party were fully regenerated (HP and CP). Strange fountain felt apart."
+                            "The water tasted like tomato juice. Your party members have been fully restored (HP and CP). The mysterious fountain crumbled, its liquid instantly sinking into the ground, while the once-silver fragments turned into ordinary stone."
                         )
                 elif all_layers_contents[current_layer_index][place_index][0] == "C":
                     inventory[
@@ -193,12 +216,13 @@ def main_game_loop():
                     crystal_counter += 1
                     all_layers_contents[current_layer_index][place_index] = " "
                     console.print(
-                        "You found strange crystal with rune. Is rune important? Probably not."
+                        "You found a strange crystal with a rune. Is the rune important? Probably not."
                     )
                 elif all_layers_contents[current_layer_index][place_index][0] == "N":
                     console.print(
                         notes[all_layers_contents[current_layer_index][place_index]],
                         style="black on yellow",
+                        highlight=False,
                     )
                 elif all_layers_contents[current_layer_index][place_index] == " ":
                     console.print("Nothing interesting here.")
@@ -210,7 +234,7 @@ def main_game_loop():
                 ):
                     for item in all_layers_contents[current_layer_index][place_index]:
                         inventory_usable[item] += 1
-                    console.print("You found usefull items.")
+                    console.print("You found useful items.")
                     console.print(
                         *all_layers_contents[current_layer_index][place_index],
                         style="#60fc65"
