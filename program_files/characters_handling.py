@@ -19,8 +19,9 @@ class Character:
         self.current_crystal_power: int = self.max_crystal_power
         self.strength: int = strength
 
-    def attack(self, target):
+    def attack(self, target, console):
         target.current_hp = max(0, target.current_hp - self.strength)
+        console.print(f"{self.name} dealt {self.strength} damage to {target.name}.")
 
 
 class Player_Character_Arson(Character):
@@ -33,16 +34,16 @@ class Player_Character_Arson(Character):
             ("Power Attack 3 <3CP>", self.ability_3),
         ]
 
-    def attack(self, target: Character):
-        super().attack(target)
+    def attack(self, target: Character, console):
+        super().attack(target, console)
 
-    def ability_1(self):
+    def ability_1(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_2(self):
+    def ability_2(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_3(self):
+    def ability_3(self, target: Character, targets: list[Character], console):
         pass
 
 
@@ -56,16 +57,16 @@ class Player_Character_Histri(Character):
             ("Mighty Storm <3CP>", self.ability_3),
         ]
 
-    def attack(self, target: Character):
-        super().attack(target)
+    def attack(self, target: Character, console):
+        super().attack(target, console)
 
-    def ability_1(self):
+    def ability_1(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_2(self):
+    def ability_2(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_3(self):
+    def ability_3(self, target: Character, targets: list[Character], console):
         pass
 
 
@@ -79,32 +80,105 @@ class Player_Character_Golrik(Character):
             ("Random Bullshit! <3CP>", self.ability_3),
         ]
 
-    def attack(self, target: Character):
-        super().attack(target)
+    def attack(self, target: Character, console):
+        super().attack(target, console)
 
-    def ability_1(self):
+    def ability_1(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_2(self):
+    def ability_2(self, target: Character, targets: list[Character], console):
         pass
 
-    def ability_3(self):
+    def ability_3(self, target: Character, targets: list[Character], console):
         pass
 
 
 class Enemy_Character_Frus(Character):
     def __init__(self):
-        super().__init__("Frus", 1, 10)
+        super().__init__("Frus", 1, 5)
         self.description = "description"
 
-    def attack(self, target: Character):
-        super().attack(target)
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Stone_Anomaly(Character):
+    def __init__(self):
+        super().__init__("Stone Anomaly", 1, 7)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        target.current_hp = max(0, target.current_hp - random.randint(1, 2))
 
 
 class Enemy_Character_Dark_Goo(Character):
     def __init__(self):
-        super().__init__("Dark Goo", 1, 15)
+        super().__init__("Dark Goo", 2, 9)
         self.description: str = "description"
 
-    def attack(self, target: Character):
-        target.current_hp = max(0, target.current_hp - random.randint(1, 2))
+    def attack(self, target: Character, targets: list[Character], console):
+        for character in targets:
+            character.current_hp = max(0, target.current_hp - 1)
+
+
+class Enemy_Character_Xeres(Character):
+    def __init__(self):
+        super().__init__("Xeres", 2, 11)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Treasure_Imp(Character):
+    def __init__(self):
+        super().__init__("Treasure Imp", 3, 12)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Stone_Elemental(Character):
+    def __init__(self):
+        super().__init__("Stone Elemental", 3, 13)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        target.current_hp = max(0, target.current_hp - random.choice([2, 3, 4]))
+
+
+class Enemy_Character_Blue_Crystal_Spider(Character):
+    def __init__(self):
+        super().__init__("Blue Crystal Spider", 4, 14)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Iris(Character):
+    def __init__(self):
+        super().__init__("Iris", 4, 15)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Drake(Character):
+    def __init__(self):
+        super().__init__("Purple-Scaled Drake", 5, 20)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)
+
+
+class Enemy_Character_Skiris(Character):
+    def __init__(self):
+        super().__init__("Great Skiris, Guardian of the Rykku", 5, 50)
+        self.description = "description"
+
+    def attack(self, target: Character, targets: list[Character], console):
+        super().attack(target, console)

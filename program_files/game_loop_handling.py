@@ -216,7 +216,7 @@ def main_game_loop():
                     crystal_counter += 1
                     all_layers_contents[current_layer_index][place_index] = " "
                     console.print(
-                        "You found a strange crystal with a rune. Is the rune important? Probably not."
+                        "You found a [#bb3efa]strange crystal[/#bb3efa] with a rune. Is the rune important? Probably not."
                     )
                 elif all_layers_contents[current_layer_index][place_index][0] == "N":
                     console.print(
@@ -241,4 +241,17 @@ def main_game_loop():
                     )
                     all_layers_contents[current_layer_index][place_index] = " "
                 else:
-                    console.print("Battle!")
+                    battle_result: bool = battle.battle(
+                        console,
+                        player_characters,
+                        all_layers_contents[current_layer_index][place_index],
+                    )
+                    if battle_result:
+                        console.print("The enemies have been defeated by your party!")
+                        all_layers_contents[current_layer_index][place_index] = " "
+                    else:
+                        console.print(
+                            "Unfortunately, the enemies have overwhelmed you. Your party has fallen. [bold red]GAME OVER[/bold red]"
+                        )
+                        input("Press 'Enter' to end game.")
+                        break

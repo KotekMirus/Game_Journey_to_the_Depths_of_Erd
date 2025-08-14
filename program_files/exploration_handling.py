@@ -4,56 +4,56 @@ import random
 layers_data: list[dict[str:any]] = [
     {
         "battles_number": 3,
-        "enemies_number_per_battle": [1, 1, 2, 2, 2, 3],
+        "enemies_number_per_battle": [1, 1, 2, 2, 2],
         "enemies_types": [
             characters.Enemy_Character_Frus,
-            characters.Enemy_Character_Dark_Goo,
+            characters.Enemy_Character_Stone_Anomaly,
         ],
         "places_contents": ["E", "N1", "N2", "CS", "T", "T", "T"],
     },
     {
         "battles_number": 4,
-        "enemies_number_per_battle": [1, 2, 2, 2, 3, 3],
+        "enemies_number_per_battle": [2, 2, 2, 3, 3, 3, 3, 4],
         "enemies_types": [
-            characters.Enemy_Character_Frus,
+            characters.Enemy_Character_Stone_Anomaly,
             characters.Enemy_Character_Dark_Goo,
+            characters.Enemy_Character_Xeres,
         ],
         "places_contents": ["S", "E", "CF", "T", "T", "T"],
     },
     {
         "battles_number": 4,
-        "enemies_number_per_battle": [2, 2, 3, 3, 3, 4],
+        "enemies_number_per_battle": [2, 2, 2, 2, 3, 3, 3],
         "enemies_types": [
-            characters.Enemy_Character_Frus,
-            characters.Enemy_Character_Dark_Goo,
+            characters.Enemy_Character_Xeres,
+            characters.Enemy_Character_Treasure_Imp,
+            characters.Enemy_Character_Stone_Elemental,
         ],
         "places_contents": ["S", "E", "CJ", "N3", "F", "T"],
     },
     {
         "battles_number": 5,
-        "enemies_number_per_battle": [2, 3, 3, 3, 4, 4],
+        "enemies_number_per_battle": [2, 2, 2, 2, 3, 3],
         "enemies_types": [
-            characters.Enemy_Character_Frus,
-            characters.Enemy_Character_Dark_Goo,
+            characters.Enemy_Character_Stone_Elemental,
+            characters.Enemy_Character_Blue_Crystal_Spider,
+            characters.Enemy_Character_Iris,
         ],
         "places_contents": ["S", "E", "CP", "CX", "T"],
     },
     {
         "battles_number": 6,
-        "enemies_number_per_battle": [3, 3, 4, 4, 4, 5],
+        "enemies_number_per_battle": [1, 1, 2, 2, 2],
         "enemies_types": [
-            characters.Enemy_Character_Frus,
-            characters.Enemy_Character_Dark_Goo,
+            characters.Enemy_Character_Iris,
+            characters.Enemy_Character_Drake,
         ],
         "places_contents": ["S", "EE", "N4", "T"],
     },
     {
         "battles_number": 1,
         "enemies_number_per_battle": [1],
-        "enemies_types": [
-            characters.Enemy_Character_Frus,
-            characters.Enemy_Character_Dark_Goo,
-        ],
+        "enemies_types": [characters.Enemy_Character_Skiris],
         "places_contents": [],
     },
 ]

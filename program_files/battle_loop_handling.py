@@ -21,7 +21,7 @@ def show_status(
     player_group: Panel = Panel(
         Columns(player_characters_panels, expand=True, equal=True),
         title="Party",
-        border_style="yellow",
+        border_style="green",
     )
     console.print(player_group)
     if enemies:
@@ -29,13 +29,14 @@ def show_status(
             Panel(
                 f"HP: {enemy.current_hp}/{enemy.max_hp}",
                 title=enemy.name,
+                border_style="#b3feff",
             )
             for enemy in enemies
         ]
         enemies_group: Panel = Panel(
             Columns(enemies_panels, expand=True, equal=True),
             title="Enemies",
-            border_style="yellow",
+            border_style="red",
         )
         console.print(enemies_group)
 
@@ -43,7 +44,7 @@ def show_status(
 def battle(
     console: Console, player_characters: list[Character], enemies: list[Character]
 ) -> bool:
-    console.rule(f"[bold green]Battle[/bold green]")
+    console.rule(f"[bold #bb3efa]Battle[/bold #bb3efa]", style="#bb3efa")
     battle_ended: bool = False
     while not battle_ended:
         for player_character in player_characters:
@@ -59,7 +60,7 @@ def battle(
                 target_index: int = questionary.select(
                     "Choose your target:", choices=target_choices
                 ).ask()
-                player_character.attack(enemies[target_index])
+                player_character.attack(enemies[target_index], console)
             elif choice == "Use ability":
                 abilities_choices: list[questionary.Choice] = [
                     questionary.Choice(title=a[0], value=a[1])
@@ -72,7 +73,7 @@ def battle(
                 target_index: int = questionary.select(
                     "Choose your target:", choices=target_choices
                 ).ask()
-                ability(enemies[target_index])
+                ability(enemies[target_index], enemies, console)
             elif choice == "End turn":
                 pass
             enemies: list[Character] = [
@@ -81,9 +82,11 @@ def battle(
             if not enemies:
                 return True
         for enemy in enemies:
-            console.rule(f"[bold green]{enemy.name}'s turn[/bold green]")
+            console.rule(f"[bold red]{enemy.name}'s turn[/bold red]", style="red")
             random_target_index = random.randint(0, len(player_characters) - 1)
-            enemy.attack(random_target_index)
+            enemy.attack(
+                player_characters[random_target_index], player_characters, console
+            )
             player_characters_are_dead: bool = all(
                 character.current_hp <= 0 for character in player_characters
             )
