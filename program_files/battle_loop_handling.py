@@ -41,11 +41,18 @@ def show_status(
         console.print(enemies_group)
 
 
+def introduce_enemies(console: Console, enemies: list[Character]):
+    console.print("[bold red]Enemies[/bold red]")
+    for enemy in enemies:
+        console.print(enemy.description, style="#73fafa")
+
+
 def battle(
     console: Console, player_characters: list[Character], enemies: list[Character]
 ) -> bool:
     console.rule(f"[bold #bb3efa]Battle[/bold #bb3efa]", style="#bb3efa")
     battle_ended: bool = False
+    introduce_enemies(console, enemies)
     while not battle_ended:
         for player_character in player_characters:
             show_status(console, player_characters, enemies)

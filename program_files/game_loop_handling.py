@@ -17,16 +17,24 @@ def initialize_party() -> list[characters.Character]:
     return [character_1, character_2, character_3]
 
 
-def initialize_descriptions() -> tuple[str, dict[str:str], dict[str:str]]:
+def initialize_descriptions() -> tuple[str, str, str, dict[str:str], dict[str:str]]:
     descriptions: dict[str : dict[str:str]] = None
     with open("descriptions.json", "r", encoding="utf-8") as file:
         descriptions = json.load(file)
-    return descriptions["introduction"], descriptions["layers"], descriptions["notes"]
+    return (
+        descriptions["introduction"],
+        descriptions["boss_introduction"],
+        descriptions["ending"],
+        descriptions["layers"],
+        descriptions["notes"],
+    )
 
 
 def main_game_loop():
     player_characters: list[characters.Character] = initialize_party()
-    introduction, layers_descriptions, notes = initialize_descriptions()
+    introduction, boss_introduction, ending, layers_descriptions, notes = (
+        initialize_descriptions()
+    )
     inventory: dict[str:str] = {}
     inventory_usable: dict[str:int] = {
         "Healing potion (+10HP)": 0,
@@ -45,7 +53,15 @@ def main_game_loop():
     )
     while True:
         if current_layer_index == 5:
-            console.print("Final battle!")
+            battle_result: bool = battle.battle(
+                console, player_characters, all_layers_contents[current_layer_index][0]
+            )
+            if battle_result:
+                console.print(ending)
+            else:
+                console.print(
+                    "Unfortunately, the Great Skiris, Guardian of the Rykku, proved far too powerful for the brave adventurers. They fell beneath the weight of his relentless attacks. [bold red]GAME OVER[/bold red]"
+                )
             console.print(
                 "[bold]THANK YOU FOR PLAYING <3[/bold]",
                 style="#f551f2",

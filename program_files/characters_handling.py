@@ -38,13 +38,34 @@ class Player_Character_Arson(Character):
         super().attack(target, console)
 
     def ability_1(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 1:
+            target.current_hp = max(0, target.current_hp - 5)
+            console.print(f"{self.name} dealt 5 damage to {target.name}.")
+            self.current_crystal_power -= 1
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_2(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 2:
+            target.current_hp = max(0, target.current_hp - 10)
+            console.print(f"{self.name} dealt 10 damage to {target.name}.")
+            self.current_crystal_power -= 2
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_3(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 3:
+            target.current_hp = max(0, target.current_hp - 15)
+            console.print(f"{self.name} dealt 15 damage to {target.name}.")
+            self.current_crystal_power -= 3
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
 
 class Player_Character_Histri(Character):
@@ -61,13 +82,38 @@ class Player_Character_Histri(Character):
         super().attack(target, console)
 
     def ability_1(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 1:
+            for character in targets:
+                character.current_hp = max(0, character.current_hp - 2)
+            console.print(f"{self.name} dealt 2 damage to all enemies.")
+            self.current_crystal_power -= 1
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_2(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 2:
+            target.current_hp = max(0, target.current_hp - 4)
+            console.print(f"{self.name} dealt 4 damage to {target.name}.")
+            self.current_hp = min(self.max_hp, self.current_hp + 4)
+            console.print(f"{self.name} healed herself for 4")
+            self.current_crystal_power -= 2
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_3(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 3:
+            for character in targets:
+                character.current_hp = max(0, character.current_hp - 6)
+            console.print(f"{self.name} dealt 6 damage to all enemies.")
+            self.current_crystal_power -= 3
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
 
 class Player_Character_Golrik(Character):
@@ -76,7 +122,7 @@ class Player_Character_Golrik(Character):
         self.description: str = get_character_description("Golrik")
         self.abilities: list[tuple[str, Callable]] = [
             ("Unstable Strike <1CP>", self.ability_1),
-            ("Healing Circle <2CP>", self.ability_2),
+            ("Unpredictable Wave <2CP>", self.ability_2),
             ("Random Bullshit! <3CP>", self.ability_3),
         ]
 
@@ -84,19 +130,52 @@ class Player_Character_Golrik(Character):
         super().attack(target, console)
 
     def ability_1(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 1:
+            damage: int = random.randint(1, 5)
+            target.current_hp = max(0, target.current_hp - damage)
+            console.print(f"{self.name} dealt {damage} damage to {target.name}.")
+            health: int = random.randint(1, 5)
+            self.current_hp = min(self.max_hp, self.current_hp + health)
+            console.print(f"{self.name} healed herself for {health}")
+            self.current_crystal_power -= 1
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_2(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 2:
+            damage: int = random.randint(2, 4)
+            for character in targets:
+                character.current_hp = max(0, character.current_hp - damage)
+            console.print(f"{self.name} dealt {damage} damage to all enemies.")
+            health: int = random.randint(1, 3)
+            self.current_hp = min(self.max_hp, self.current_hp + health)
+            console.print(f"{self.name} healed himself for {health}")
+            self.current_crystal_power -= 2
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
     def ability_3(self, target: Character, targets: list[Character], console):
-        pass
+        if self.current_crystal_power >= 3:
+            damage: int = random.randint(3, 30)
+            target.current_hp = max(0, target.current_hp - damage)
+            console.print(f"{self.name} dealt {damage} damage to {target.name}.")
+            self.current_crystal_power -= 3
+        else:
+            console.print(
+                "You tried to use an ability without having enough CP. You lost your turn."
+            )
 
 
 class Enemy_Character_Frus(Character):
     def __init__(self):
         super().__init__("Frus", 1, 5)
-        self.description = "description"
+        self.description = (
+            "Frus - a half-meter-tall, rat-like creature moving on two legs."
+        )
 
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
@@ -105,71 +184,96 @@ class Enemy_Character_Frus(Character):
 class Enemy_Character_Stone_Anomaly(Character):
     def __init__(self):
         super().__init__("Stone Anomaly", 1, 7)
-        self.description = "description"
+        self.description = "Stone Anomaly - a small air vortex lifting tiny pebbles."
 
     def attack(self, target: Character, targets: list[Character], console):
-        target.current_hp = max(0, target.current_hp - random.randint(1, 2))
+        damage: int = random.randint(1, 2)
+        target.current_hp = max(0, target.current_hp - damage)
+        console.print(f"{self.name} dealt {damage} damage to {target.name}.")
 
 
 class Enemy_Character_Dark_Goo(Character):
     def __init__(self):
         super().__init__("Dark Goo", 2, 9)
-        self.description: str = "description"
+        self.description: str = "Dark Goo - a blob of black slime."
 
     def attack(self, target: Character, targets: list[Character], console):
         for character in targets:
-            character.current_hp = max(0, target.current_hp - 1)
+            character.current_hp = max(0, character.current_hp - 1)
+        console.print(f"{self.name} dealt 1 damage to all party members.")
 
 
 class Enemy_Character_Xeres(Character):
     def __init__(self):
         super().__init__("Xeres", 2, 11)
-        self.description = "description"
+        self.description = "Xeres - a red, spherical spirit floating in the air."
 
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
+        self.current_hp = min(self.max_hp, self.current_hp + 1)
+        console.print(f"{self.name} healed himself for 1")
 
 
 class Enemy_Character_Treasure_Imp(Character):
     def __init__(self):
         super().__init__("Treasure Imp", 3, 12)
-        self.description = "description"
+        self.description = "Treasure Imp - a short, hunched creature with an earthy complexion, carrying a sturdy sack on its back."
 
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
+        target.current_crystal_power = max(0, target.current_crystal_power - 1)
+        console.print(f"{self.name} drained 1 CP from {target.name}")
 
 
 class Enemy_Character_Stone_Elemental(Character):
     def __init__(self):
         super().__init__("Stone Elemental", 3, 13)
-        self.description = "description"
+        self.description = "Stone Elemental - a small tornado lifting medium-sized rocks, crackling with green energy inside."
 
     def attack(self, target: Character, targets: list[Character], console):
-        target.current_hp = max(0, target.current_hp - random.choice([2, 3, 4]))
+        damage: int = random.choice([2, 3, 4])
+        target.current_hp = max(0, target.current_hp - damage)
+        console.print(f"{self.name} dealt {damage} damage to {target.name}.")
 
 
 class Enemy_Character_Blue_Crystal_Spider(Character):
     def __init__(self):
-        super().__init__("Blue Crystal Spider", 4, 14)
-        self.description = "description"
+        super().__init__("Blue Crystal Spider", 3, 14)
+        self.description = "Blue Crystal Spider - a six-legged creature whose limbs are made of blue crystal blocks with hexagonal bases. At the center of its body rests a transparent crystal fragment, inside of which a small storm can be seen."
 
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
+        for character in targets:
+            character.current_hp = max(0, character.current_hp - 1)
+        console.print(f"{self.name} dealt 1 damage to all party members.")
 
 
 class Enemy_Character_Iris(Character):
     def __init__(self):
         super().__init__("Iris", 4, 15)
-        self.description = "description"
+        self.description = "Iris - a rainbow-colored, spherical spirit hovering in the air, scattering colorful sparks."
 
     def attack(self, target: Character, targets: list[Character], console):
-        super().attack(target, console)
+        random_target_index: int = random.randint(0, len(targets) - 1)
+        targets[random_target_index].current_hp = max(
+            0, targets[random_target_index].current_hp - 3
+        )
+        console.print(
+            f"{self.name} dealt 3 damage to {targets[random_target_index].name}."
+        )
+        random_target_index: int = random.randint(0, len(targets) - 1)
+        targets[random_target_index].current_hp = max(
+            0, targets[random_target_index].current_hp - 2
+        )
+        console.print(
+            f"{self.name} dealt 2 damage to {targets[random_target_index].name}."
+        )
 
 
 class Enemy_Character_Drake(Character):
     def __init__(self):
         super().__init__("Purple-Scaled Drake", 5, 20)
-        self.description = "description"
+        self.description = "Purple-Scaled Drake - a massive drake with metallic-sheened purple scales, clutching an ornate spear in its claws."
 
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
@@ -177,8 +281,24 @@ class Enemy_Character_Drake(Character):
 
 class Enemy_Character_Skiris(Character):
     def __init__(self):
-        super().__init__("Great Skiris, Guardian of the Rykku", 5, 50)
-        self.description = "description"
+        super().__init__("Great Skiris, Guardian of the Rykku", 6, 60)
+        self.description = "Great Skiris, Guardian of the Rykku - a gigantic snake with golden scales, adorned with pieces of silver armor."
 
     def attack(self, target: Character, targets: list[Character], console):
-        super().attack(target, console)
+        if self.current_hp > 40:
+            super().attack(target, console)
+        elif self.current_hp > 20:
+            for _ in range(3):
+                random_target_index: int = random.randint(0, len(targets) - 1)
+                targets[random_target_index].current_hp = max(
+                    0, targets[random_target_index].current_hp - 3
+                )
+                console.print(
+                    f"{self.name} dealt 3 damage to {targets[random_target_index].name}."
+                )
+        else:
+            target.current_hp = max(0, target.current_hp - 4)
+            console.print(f"{self.name} dealt 3 damage to {target.name}.")
+            for character in targets:
+                character.current_hp = max(0, character.current_hp - 2)
+            console.print(f"{self.name} dealt 3 damage to all party members.")
