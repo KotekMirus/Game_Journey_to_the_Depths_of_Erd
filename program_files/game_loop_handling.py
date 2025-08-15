@@ -35,6 +35,7 @@ def main_game_loop():
     introduction, boss_introduction, ending, layers_descriptions, notes = (
         initialize_descriptions()
     )
+    discovered_locations: list[list[str]] = [["?"] * 10 for _ in range(5)]
     inventory: dict[str:str] = {}
     inventory_usable: dict[str:int] = {
         "Healing potion (+10HP)": 0,
@@ -74,6 +75,7 @@ def main_game_loop():
             choices=[
                 "Check party",
                 "Check layer description",
+                "Check the discovered locations",
                 "Check inventory",
                 "Use item",
                 "Explore layer",
@@ -87,9 +89,23 @@ def main_game_loop():
             console.print("\n")
         elif choice == "Check layer description":
             console.print(layers_descriptions[str(current_layer_index)])
+        elif choice == "Check the discovered locations":
+            console.print(
+                "You are currently on layer " + str(current_layer_index + 1) + "."
+            )
+            table: Table = Table(title="Discovered locations", show_lines=True)
+            table.add_column("Layer")
+            for i in range(10):
+                table.add_column("Place " + str(i + 1))
+            for i in range(len(discovered_locations)):
+                table.add_row(str(i + 1), *discovered_locations[i])
+            console.print(table)
+            console.print(
+                "EU - exit to upper layer\nEL - exit to lower layer\ni  - useful information\nF  - fountain\nN  - nothing\n"
+            )
         elif choice == "Check inventory":
             inventory_combined = inventory_usable | inventory
-            table = Table(title="Inventory", show_lines=True)
+            table: Table = Table(title="Inventory", show_lines=True)
             table.add_column("Item")
             table.add_column("Quantity/Description")
             for item, description in inventory_combined.items():
@@ -143,6 +159,9 @@ def main_game_loop():
             else:
                 console.print("You don't have enough copies of this item.")
         elif choice == "Explore layer":
+            console.print(
+                "You are currently on layer " + str(current_layer_index + 1) + "."
+            )
             place_choices: list[questionary.Choice] = [
                 questionary.Choice(title="Place " + str(i + 1), value=i)
                 for i in range(len(all_layers_contents[current_layer_index]))
@@ -152,6 +171,7 @@ def main_game_loop():
             ).ask()
             if isinstance(all_layers_contents[current_layer_index][place_index], str):
                 if all_layers_contents[current_layer_index][place_index] == "S":
+                    discovered_locations[current_layer_index][place_index] = "EU"
                     console.print("This is the gateway to the upper layer.")
                     choice: str = questionary.select(
                         "Do you want to go to upper layer?",
@@ -163,6 +183,7 @@ def main_game_loop():
                     if choice == "Yes":
                         current_layer_index -= 1
                 elif all_layers_contents[current_layer_index][place_index] == "E":
+                    discovered_locations[current_layer_index][place_index] = "EL"
                     console.print("This is the gateway to the lower layer.")
                     choice: str = questionary.select(
                         "Do you want to go to lower layer?",
@@ -174,6 +195,7 @@ def main_game_loop():
                     if choice == "Yes":
                         current_layer_index += 1
                 elif all_layers_contents[current_layer_index][place_index] == "EE":
+                    discovered_locations[current_layer_index][place_index] = "EL"
                     console.print(
                         'Before you stands a massive slab of cream-colored material. Countless swirling patterns are carved into the pale stone. At about the height of your head, five precisely cut holes are set into the slab, each surrounded by a gilded frame shaped like the fangs of an open maw. Above them, an inscription in the Dekti language reads: "Heart of the Rykku."',
                         highlight=False,
@@ -200,6 +222,7 @@ def main_game_loop():
                             else:
                                 console.print("Nothing happens.")
                 elif all_layers_contents[current_layer_index][place_index] == "F":
+                    discovered_locations[current_layer_index][place_index] = "F"
                     console.print(
                         "Amid the tunnels rich with precious deposits, you find a small fountain crafted from silver metal. Water slowly trickles from its tip, flowing along its ornate carvings into the basin below. The liquid shimmers with all the colors of the rainbow."
                     )
@@ -211,6 +234,7 @@ def main_game_loop():
                         ],
                     ).ask()
                     if choice == "Yes":
+                        discovered_locations[current_layer_index][place_index] = "N"
                         all_layers_contents[current_layer_index][place_index] = " "
                         for character in player_characters:
                             character.current_hp = character.max_hp
@@ -230,11 +254,13 @@ def main_game_loop():
                         + "'."
                     )
                     crystal_counter += 1
+                    discovered_locations[current_layer_index][place_index] = "N"
                     all_layers_contents[current_layer_index][place_index] = " "
                     console.print(
                         "You found a [#bb3efa]strange crystal[/#bb3efa] with a rune. Is the rune important? Probably not."
                     )
                 elif all_layers_contents[current_layer_index][place_index][0] == "N":
+                    discovered_locations[current_layer_index][place_index] = "i"
                     console.print(
                         notes[all_layers_contents[current_layer_index][place_index]],
                         style="black on yellow",
@@ -255,6 +281,7 @@ def main_game_loop():
                         *all_layers_contents[current_layer_index][place_index],
                         style="#60fc65"
                     )
+                    discovered_locations[current_layer_index][place_index] = "N"
                     all_layers_contents[current_layer_index][place_index] = " "
                 else:
                     battle_result: bool = battle.battle(
@@ -264,6 +291,7 @@ def main_game_loop():
                     )
                     if battle_result:
                         console.print("The enemies have been defeated by your party!")
+                        discovered_locations[current_layer_index][place_index] = "N"
                         all_layers_contents[current_layer_index][place_index] = " "
                     else:
                         console.print(

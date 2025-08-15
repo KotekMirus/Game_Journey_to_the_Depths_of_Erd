@@ -56,7 +56,14 @@ def battle(
     while not battle_ended:
         for player_character in player_characters:
             show_status(console, player_characters, enemies)
-            console.rule(f"[bold green]{player_character.name}'s turn[/bold green]")
+            console.rule(
+                f"[bold green]{player_character.name}'s turn[/bold green]", align="left"
+            )
+            if player_character.current_hp == 0:
+                console.print(
+                    f"{player_character.name}'s turn is skipped – they are unconscious and cannot attack (0 HP).\n"
+                )
+                continue
             choice: str = questionary.select(
                 "Choose your action:", choices=["Attack", "Use ability", "End turn"]
             ).ask()
@@ -89,7 +96,9 @@ def battle(
             if not enemies:
                 return True
         for enemy in enemies:
-            console.rule(f"[bold red]{enemy.name}'s turn[/bold red]", style="red")
+            console.rule(
+                f"[bold red]{enemy.name}'s turn[/bold red]", style="red", align="left"
+            )
             random_target_index = random.randint(0, len(player_characters) - 1)
             enemy.attack(
                 player_characters[random_target_index], player_characters, console

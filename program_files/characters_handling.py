@@ -21,7 +21,7 @@ class Character:
 
     def attack(self, target, console):
         target.current_hp = max(0, target.current_hp - self.strength)
-        console.print(f"{self.name} dealt {self.strength} damage to {target.name}.")
+        console.print(f"{self.name} dealt {self.strength} damage to {target.name}.\n")
 
 
 class Player_Character_Arson(Character):
@@ -40,31 +40,31 @@ class Player_Character_Arson(Character):
     def ability_1(self, target: Character, targets: list[Character], console):
         if self.current_crystal_power >= 1:
             target.current_hp = max(0, target.current_hp - 5)
-            console.print(f"{self.name} dealt 5 damage to {target.name}.")
+            console.print(f"{self.name} dealt 5 damage to {target.name}.\n")
             self.current_crystal_power -= 1
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_2(self, target: Character, targets: list[Character], console):
         if self.current_crystal_power >= 2:
             target.current_hp = max(0, target.current_hp - 10)
-            console.print(f"{self.name} dealt 10 damage to {target.name}.")
+            console.print(f"{self.name} dealt 10 damage to {target.name}.\n")
             self.current_crystal_power -= 2
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_3(self, target: Character, targets: list[Character], console):
         if self.current_crystal_power >= 3:
             target.current_hp = max(0, target.current_hp - 15)
-            console.print(f"{self.name} dealt 15 damage to {target.name}.")
+            console.print(f"{self.name} dealt 15 damage to {target.name}.\n")
             self.current_crystal_power -= 3
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
 
@@ -85,11 +85,11 @@ class Player_Character_Histri(Character):
         if self.current_crystal_power >= 1:
             for character in targets:
                 character.current_hp = max(0, character.current_hp - 2)
-            console.print(f"{self.name} dealt 2 damage to all enemies.")
+            console.print(f"{self.name} dealt 2 damage to all enemies.\n")
             self.current_crystal_power -= 1
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_2(self, target: Character, targets: list[Character], console):
@@ -97,22 +97,22 @@ class Player_Character_Histri(Character):
             target.current_hp = max(0, target.current_hp - 4)
             console.print(f"{self.name} dealt 4 damage to {target.name}.")
             self.current_hp = min(self.max_hp, self.current_hp + 4)
-            console.print(f"{self.name} healed herself for 4")
+            console.print(f"{self.name} healed herself for 4.\n")
             self.current_crystal_power -= 2
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_3(self, target: Character, targets: list[Character], console):
         if self.current_crystal_power >= 3:
             for character in targets:
                 character.current_hp = max(0, character.current_hp - 6)
-            console.print(f"{self.name} dealt 6 damage to all enemies.")
+            console.print(f"{self.name} dealt 6 damage to all enemies.\n")
             self.current_crystal_power -= 3
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
 
@@ -136,11 +136,11 @@ class Player_Character_Golrik(Character):
             console.print(f"{self.name} dealt {damage} damage to {target.name}.")
             health: int = random.randint(1, 5)
             self.current_hp = min(self.max_hp, self.current_hp + health)
-            console.print(f"{self.name} healed herself for {health}")
+            console.print(f"{self.name} healed himself for {health}.\n")
             self.current_crystal_power -= 1
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_2(self, target: Character, targets: list[Character], console):
@@ -151,22 +151,22 @@ class Player_Character_Golrik(Character):
             console.print(f"{self.name} dealt {damage} damage to all enemies.")
             health: int = random.randint(1, 3)
             self.current_hp = min(self.max_hp, self.current_hp + health)
-            console.print(f"{self.name} healed himself for {health}")
+            console.print(f"{self.name} healed himself for {health}.\n")
             self.current_crystal_power -= 2
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
     def ability_3(self, target: Character, targets: list[Character], console):
         if self.current_crystal_power >= 3:
             damage: int = random.randint(3, 30)
             target.current_hp = max(0, target.current_hp - damage)
-            console.print(f"{self.name} dealt {damage} damage to {target.name}.")
+            console.print(f"{self.name} dealt {damage} damage to {target.name}.\n")
             self.current_crystal_power -= 3
         else:
             console.print(
-                "You tried to use an ability without having enough CP. You lost your turn."
+                "You tried to use an ability without having enough CP. You lost your turn.\n"
             )
 
 
@@ -189,7 +189,7 @@ class Enemy_Character_Stone_Anomaly(Character):
     def attack(self, target: Character, targets: list[Character], console):
         damage: int = random.randint(1, 2)
         target.current_hp = max(0, target.current_hp - damage)
-        console.print(f"{self.name} dealt {damage} damage to {target.name}.")
+        console.print(f"{self.name} dealt {damage} damage to {target.name}.\n")
 
 
 class Enemy_Character_Dark_Goo(Character):
@@ -200,7 +200,7 @@ class Enemy_Character_Dark_Goo(Character):
     def attack(self, target: Character, targets: list[Character], console):
         for character in targets:
             character.current_hp = max(0, character.current_hp - 1)
-        console.print(f"{self.name} dealt 1 damage to all party members.")
+        console.print(f"{self.name} dealt 1 damage to all party members.\n")
 
 
 class Enemy_Character_Xeres(Character):
@@ -211,7 +211,7 @@ class Enemy_Character_Xeres(Character):
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
         self.current_hp = min(self.max_hp, self.current_hp + 1)
-        console.print(f"{self.name} healed himself for 1")
+        console.print(f"{self.name} healed himself for 1.\n")
 
 
 class Enemy_Character_Treasure_Imp(Character):
@@ -222,7 +222,7 @@ class Enemy_Character_Treasure_Imp(Character):
     def attack(self, target: Character, targets: list[Character], console):
         super().attack(target, console)
         target.current_crystal_power = max(0, target.current_crystal_power - 1)
-        console.print(f"{self.name} drained 1 CP from {target.name}")
+        console.print(f"{self.name} drained 1 CP from {target.name}.\n")
 
 
 class Enemy_Character_Stone_Elemental(Character):
@@ -233,7 +233,7 @@ class Enemy_Character_Stone_Elemental(Character):
     def attack(self, target: Character, targets: list[Character], console):
         damage: int = random.choice([2, 3, 4])
         target.current_hp = max(0, target.current_hp - damage)
-        console.print(f"{self.name} dealt {damage} damage to {target.name}.")
+        console.print(f"{self.name} dealt {damage} damage to {target.name}.\n")
 
 
 class Enemy_Character_Blue_Crystal_Spider(Character):
@@ -245,7 +245,7 @@ class Enemy_Character_Blue_Crystal_Spider(Character):
         super().attack(target, console)
         for character in targets:
             character.current_hp = max(0, character.current_hp - 1)
-        console.print(f"{self.name} dealt 1 damage to all party members.")
+        console.print(f"{self.name} dealt 1 damage to all party members.\n")
 
 
 class Enemy_Character_Iris(Character):
@@ -266,7 +266,7 @@ class Enemy_Character_Iris(Character):
             0, targets[random_target_index].current_hp - 2
         )
         console.print(
-            f"{self.name} dealt 2 damage to {targets[random_target_index].name}."
+            f"{self.name} dealt 2 damage to {targets[random_target_index].name}.\n"
         )
 
 
@@ -294,11 +294,11 @@ class Enemy_Character_Skiris(Character):
                     0, targets[random_target_index].current_hp - 3
                 )
                 console.print(
-                    f"{self.name} dealt 3 damage to {targets[random_target_index].name}."
+                    f"{self.name} dealt 3 damage to {targets[random_target_index].name}.\n"
                 )
         else:
             target.current_hp = max(0, target.current_hp - 4)
             console.print(f"{self.name} dealt 3 damage to {target.name}.")
             for character in targets:
                 character.current_hp = max(0, character.current_hp - 2)
-            console.print(f"{self.name} dealt 3 damage to all party members.")
+            console.print(f"{self.name} dealt 3 damage to all party members.\n")
